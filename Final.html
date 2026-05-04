@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UEC Performance Console v5.6</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel2: #f2f5fa;
+      --panel3: #eef3f9;
+      --text: #16202c;
+      --muted: #627286;
+      --accent: #0f72b8;
+      --accent2: #a05f16;
+      --danger: #b33a3a;
+      --ok: #2f8a4c;
+      --border: rgba(18, 32, 44, .12);
+      --shadow: 0 18px 40px rgba(14, 26, 38, .12);
+      --focus: rgba(15, 114, 184, .22);
+    }
+    [data-theme="dark"] {
+      --bg: #0d1218;
+      --panel: #101821;
+      --panel2: #0c1219;
+      --panel3: #111a22;
+      --text: #dbe4ed;
+      --muted: #7d90a4;
+      --accent: #9ad7ff;
+      --accent2: #f0b36d;
+      --danger: #ff8b8b;
+      --ok: #8fe39e;
+      --border: rgba(154, 215, 255, .15);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .42);
+      --focus: rgba(154, 215, 255, .22);
+    }
+    * {
+      box-sizing: border-box
+    }
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: radial-gradient(circle at top, var(--panel3) 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      overflow: hidden
+    }
+    button,
+    input,
+    textarea {
+      font: inherit
+    }
+    .app {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      height: 100%;
+      padding: 10px
+    }
+    .toolbar,
+    .editorPanel {
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow)
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px
+    }
+    .spacer {
+      flex: 1
+    }
+    .btn {
+      background: rgba(127, 146, 168, .08);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: .15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(15, 114, 184, .35)
+    }
+    .btn.primary {
+      background: rgba(15, 114, 184, .12);
+      border-color: rgba(15, 114, 184, .25)
+    }
+    .btn.danger {
+      background: rgba(179, 58, 58, .10);
+      border-color: rgba(179, 58, 58, .22)
+    }
+    .btn.on {
+      background: rgba(47, 138, 76, .12);
+      border-color: rgba(47, 138, 76, .24);
+      color: var(--ok)
+    }
+    .btn.warning {
+      background: rgba(160, 95, 22, .12);
+      border-color: rgba(160, 95, 22, .25);
+      color: var(--accent2)
+    }
+    .label {
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+    .small {
+      font-size: 11px;
+      color: var(--muted)
+    }
+    .value {
+      color: var(--accent)
+    }
+    .slider {
+      width: 100px
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+      background: rgba(127, 146, 168, .06);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px
+    }
+    .field input {
+      width: 100%;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 9px
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--focus)
+    }
+    .stage {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 10px;
+      min-height: 0
+    }
+    .screen,
+    .script {
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 0;
+      position: relative;
+      outline: none;
+    }
+    .screen:focus,
+    .script:focus {
+      outline: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px var(--focus);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(127, 146, 168, .04);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+    .dots {
+      display: flex;
+      gap: 7px
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(127, 146, 168, .28)
+    }
+    .screen-body,
+    .script-body {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: calc(100% - 49px)
+    }
+    .boot {
+      padding: 13px 16px 4px;
+      color: var(--accent);
+      font-size: 13px;
+      line-height: 1.5
+    }
+    .logControls,
+    .scriptControls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 0;
+      flex-shrink: 0;
+    }
+    .logwrap {
+      padding: 8px 16px 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .log {
+      flex: 1;
+      background: rgba(127, 146, 168, .04);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      overflow: auto;
+      position: relative;
+      min-height: 0
+    }
+    .log::before {
+      content: "SYSTEM LOG / GLOBAL COORDINATION NETWORK";
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .12em
+    }
+    .logEntry {
+      padding: 7px 10px;
+      margin: 0 0 8px 0;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(127, 146, 168, .04);
+      white-space: pre-wrap;
+      line-height: 1.5;
+      font-size: 14px
+    }
+    .logEntry.current {
+      border-color: rgba(15, 114, 184, .32);
+      background: rgba(15, 114, 184, .08)
+    }
+    .logEntry.past {
+      opacity: .94
+    }
+    .logEntry .idx {
+      color: var(--muted);
+      margin-right: 8px
+    }
+    .statusbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 12px 14px 14px;
+      flex-shrink: 0;
+    }
+    .card {
+      background: rgba(127, 146, 168, .04);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-height: 74px
+    }
+    .card .label {
+      font-size: 10px
+    }
+    .card .value {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.35;
+      color: var(--text)
+    }
+    .dialogue {
+      flex: 1;
+      padding: 16px;
+      overflow: auto;
+      min-height: 0
+    }
+    .bubble {
+      max-width: 96%;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      line-height: 1.6;
+      font-size: 15px;
+      white-space: pre-wrap;
+      background: rgba(127, 146, 168, .04)
+    }
+    .bubble.self {
+      margin-left: auto;
+      background: rgba(15, 114, 184, .08);
+      border-color: rgba(15, 114, 184, .18)
+    }
+    .bubble.ai {
+      margin-right: auto;
+      background: rgba(160, 95, 22, .07);
+      border-color: rgba(160, 95, 22, .16)
+    }
+    .speaker {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+    .highlight {
+      background: rgba(15, 114, 184, .14) !important;
+      border-color: rgba(15, 114, 184, .34) !important
+    }
+    .footer {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(127, 146, 168, .02);
+    }
+    .kbd {
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(127, 146, 168, .06);
+      color: var(--text)
+    }
+    .editorPanel {
+      display: none;
+      grid-template-rows: auto auto 1fr auto
+    }
+    .editorPanel.open {
+      display: grid
+    }
+    .editorHead {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+    .editorGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+      min-height: 0
+    }
+    .editorBox {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 0;
+      gap: 6px
+    }
+    .editorBox textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      line-height: 1.5;
+      outline: none;
+      min-height: 260px
+    }
+    .editorBox textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--focus)
+    }
+    .help {
+      padding: 0 10px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45
+    }
+    .cameraWindow {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      width: 320px;
+      height: 240px;
+      z-index: 1000;
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .cameraWindow.open {
+      display: grid;
+      grid-template-rows: auto 1fr auto
+    }
+    .cameraDrag {
+      cursor: move;
+      user-select: none;
+      padding: 8px 10px;
+      background: rgba(127, 146, 168, .06);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+    .cameraVideoWrap {
+      position: relative;
+      background: linear-gradient(135deg, var(--panel), var(--panel3));
+      overflow: hidden
+    }
+    .cameraVideoWrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none
+    }
+    .cameraVideoWrap .placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      text-align: center;
+      padding: 10px
+    }
+    .cameraFooter {
+      padding: 8px 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px
+    }
+    .resizeHandle {
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      width: 16px;
+      height: 16px;
+      cursor: nwse-resize;
+      border-right: 2px solid rgba(127, 146, 168, .55);
+      border-bottom: 2px solid rgba(127, 146, 168, .55)
+    }
+    @media (max-width: 1100px) {
+      html,
+      body {
+        overflow: auto
+      }
+      .app {
+        height: auto;
+        min-height: 100%;
+        overflow: visible
+      }
+      .stage {
+        grid-template-columns: 1fr;
+        min-height: 700px
+      }
+      .statusbar {
+        grid-template-columns: repeat(2, 1fr)
+      }
+      .editorGrid {
+        grid-template-columns: 1fr
+      }
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 4
+      }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <div class="app">
+    <div class="toolbar">
+      <button class="btn primary" id="toggleLogBtn">Log ⏯️</button>
+      <button class="btn" id="prevLogBtn">⏮️</button>
+      <button class="btn" id="nextLogBtn">⏭️</button>
+      <div style="width:10px;"></div>
+      <button class="btn primary" id="toggleScriptBtn">Recording ⏯️</button>
+      <button class="btn" id="prevScriptBtn">⏮️</button>
+      <button class="btn" id="nextScriptBtn">⏭️</button>
+      <div class="spacer"></div>
+      <button class="btn" id="editBtn">Edit JSON</button>
+      <button class="btn" id="bindBtn">Bind JSON</button>
+      <button class="btn" id="saveBtn">Save JSON</button>
+      <button class="btn" id="ttsBtn">🔇 TTS</button>
+      <button class="btn" id="cameraBtn">📷</button>
+      <button class="btn" id="videoBtn">🎬</button>
+      <button class="btn" id="themeBtn">🌙</button>
+      <label class="small">Voice <span class="value" id="voiceSpeedVal">0.95×</span></label>
+      <input class="slider" id="voiceSpeed" type="range" min="0.7" max="1.4" step="0.05" value="0.95" />
+      <label class="small"><input type="checkbox" id="autoScroll" checked /> auto scroll</label>
+    </div>
+
+    <div class="stage">
+      <section class="screen" tabindex="0">
+        <div class="topbar">
+          <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div>UEC / GLOBAL COORDINATION TERMINAL</div>
+          <div id="clock">00:00:00</div>
+        </div>
+        <div class="screen-body">
+          <div class="boot" id="bootText">
+            booting archive interface...<br>
+            loading Republipedia node...<br>
+            establishing paper-slip authentication...<br>
+            <span class="small" id="bindStatusText">status: nominal / absurd / stable</span>
+          </div>
+          <div class="logControls">
+            <span class="label">log timeline</span>
+            <span class="small" id="logCounter">0 / 0</span>
+          </div>
+          <div class="logwrap">
+            <div class="log" id="logBox"></div>
+          </div>
+          <div class="statusbar">
+            <div class="card">
+              <div class="label">production</div>
+              <div class="value" id="prodVal">complexations online</div>
+            </div>
+            <div class="card">
+              <div class="label">labor</div>
+              <div class="value" id="laborVal">paper slips accepted</div>
+            </div>
+            <div class="card">
+              <div class="label">entropy</div>
+              <div class="value" id="entropyVal">managed, not solved</div>
+            </div>
+            <div class="card">
+              <div class="label">risk</div>
+              <div class="value" id="riskVal">reproduction friction rising</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="script" tabindex="0">
+        <div class="topbar">
+          <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div>MONOLOGUE</div>
+          <div id="segmentCounter">0 / 0</div>
+        </div>
+        <div class="script-body">
+          <div class="scriptControls">
+            <span class="label">voice log</span>
+            <span class="small" id="scriptState">ready</span>
+          </div>
+          <div class="dialogue" id="dialogue"></div>
+          <div class="footer">
+            <div></div>
+            <div>keys: select window + <span class="kbd">Space</span> play/pause <span class="kbd">→</span> next <span
+                class="kbd">←</span> prev <span class="kbd">R</span> reset</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="editorPanel" id="editorPanel">
+      <div class="editorHead">
+        <div>
+          <div class="label">json editor</div>
+          <div class="small">edit the whole file here. save writes back to the bound JSON file if one is open.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn" id="applyBtn">Apply JSON</button>
+          <button class="btn" id="closeEditorBtn">Close</button>
+        </div>
+      </div>
+      <div class="help">
+        Script line format in JSON: <span class="kbd">speaker</span>, <span class="kbd">type</span>, <span
+          class="kbd">pause</span>, <span class="kbd">voice</span>, <span class="kbd">text</span>.
+        Example: <span class="kbd">"pause": 3400</span> means milliseconds before auto-advance. <span
+          class="kbd">"voice": "yes"</span> allows TTS; <span class="kbd">"voice": "no"</span> blocks it.
+      </div>
+      <div class="editorGrid">
+        <div class="editorBox">
+          <div class="small"><span>Full JSON document</span><span class="muted">status + logs + segments + theme</span>
+          </div>
+          <textarea id="jsonEditor"></textarea>
+        </div>
+        <div class="editorBox">
+          <div class="small"><span>Quick status controls</span><span class="muted">these write into the JSON
+              document</span></div>
+          <div style="display:grid;gap:10px;grid-template-rows:repeat(4,1fr);min-height:0;">
+            <div class="field">
+              <div class="label">production</div><input id="prodInput" type="text" />
+            </div>
+            <div class="field">
+              <div class="label">labor</div><input id="laborInput" type="text" />
+            </div>
+            <div class="field">
+              <div class="label">entropy</div><input id="entropyInput" type="text" />
+            </div>
+            <div class="field">
+              <div class="label">risk</div><input id="riskInput" type="text" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cameraWindow" id="cameraWindow">
+    <div class="cameraDrag" id="cameraDrag">
+      <span id="mediaTitle">MEDIA FEED</span>
+      <span id="cameraWindowState">OFF</span>
+    </div>
+    <div class="cameraVideoWrap">
+      <video id="cameraVideo" autoplay playsinline></video>
+      <div class="placeholder" id="cameraWindowPlaceholder">MEDIA OFF</div>
+      <div class="resizeHandle" id="resizeHandle"></div>
+    </div>
+    <div class="cameraFooter">
+      <span class="small">drag header to move</span>
+      <button class="btn" id="cameraCloseBtn">Close</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const defaultState = {
+        theme: 'light',
+        status: {
+          production: 'complexations online',
+          labor: 'paper slips accepted',
+          entropy: 'managed, not solved',
+          risk: 'reproduction friction rising'
+        },
+        logs: [
+          '06:00 coordination network online.',
+          '06:02 waiting for JSON binding...'
+        ],
+        segments: [
+          { speaker: 'SYSTEM', type: 'ai', pause: 4000, voice: 'no', text: 'Awaiting data input. Please click Bind JSON or place uec-performance-console.json in the directory.' }
+        ]
+      };
+
+      const els = {
+        clock: document.getElementById('clock'),
+        logBox: document.getElementById('logBox'),
+        dialogue: document.getElementById('dialogue'),
+        logCounter: document.getElementById('logCounter'),
+        segmentCounter: document.getElementById('segmentCounter'),
+        scriptState: document.getElementById('scriptState'),
+        voiceSpeed: document.getElementById('voiceSpeed'),
+        voiceSpeedVal: document.getElementById('voiceSpeedVal'),
+        autoScroll: document.getElementById('autoScroll'),
+        toggleScriptBtn: document.getElementById('toggleScriptBtn'),
+        prevScriptBtn: document.getElementById('prevScriptBtn'),
+        nextScriptBtn: document.getElementById('nextScriptBtn'),
+        toggleLogBtn: document.getElementById('toggleLogBtn'),
+        prevLogBtn: document.getElementById('prevLogBtn'),
+        nextLogBtn: document.getElementById('nextLogBtn'),
+        editBtn: document.getElementById('editBtn'),
+        bindBtn: document.getElementById('bindBtn'),
+        saveBtn: document.getElementById('saveBtn'),
+        ttsBtn: document.getElementById('ttsBtn'),
+        cameraBtn: document.getElementById('cameraBtn'),
+        videoBtn: document.getElementById('videoBtn'),
+        themeBtn: document.getElementById('themeBtn'),
+        applyBtn: document.getElementById('applyBtn'),
+        closeEditorBtn: document.getElementById('closeEditorBtn'),
+        editorPanel: document.getElementById('editorPanel'),
+        jsonEditor: document.getElementById('jsonEditor'),
+        prodInput: document.getElementById('prodInput'),
+        laborInput: document.getElementById('laborInput'),
+        entropyInput: document.getElementById('entropyInput'),
+        riskInput: document.getElementById('riskInput'),
+        prodVal: document.getElementById('prodVal'),
+        laborVal: document.getElementById('laborVal'),
+        entropyVal: document.getElementById('entropyVal'),
+        riskVal: document.getElementById('riskVal'),
+        cameraWindow: document.getElementById('cameraWindow'),
+        cameraDrag: document.getElementById('cameraDrag'),
+        cameraCloseBtn: document.getElementById('cameraCloseBtn'),
+        cameraWindowState: document.getElementById('cameraWindowState'),
+        mediaTitle: document.getElementById('mediaTitle'),
+        cameraVideo: document.getElementById('cameraVideo'),
+        cameraWindowPlaceholder: document.getElementById('cameraWindowPlaceholder'),
+        resizeHandle: document.getElementById('resizeHandle'),
+        bindStatusText: document.getElementById('bindStatusText')
+      };
+
+      const state = {
+        json: structuredClone(defaultState),
+        logs: [],
+        segments: [],
+        logIndex: -1,
+        segmentIndex: -1,
+        logPlaying: false,
+        segmentPlaying: false,
+        logTimer: null,
+        autoAdvanceTimer: null,
+        voiceEnabled: false,
+        voiceRate: 0.95,
+        boundHandle: null,
+        savedHandle: null,
+        cameraOn: false,
+        mediaType: 'none',
+        cameraStream: null,
+        theme: 'light'
+      };
+
+      const idb = {
+        async getDB() {
+          return new Promise((resolve, reject) => {
+            const req = indexedDB.open('UEC_Console_DB', 1);
+            req.onupgradeneeded = e => e.target.result.createObjectStore('files');
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+          });
+        },
+        async set(key, val) {
+          const db = await this.getDB();
+          const tx = db.transaction('files', 'readwrite');
+          tx.objectStore('files').put(val, key);
+          return new Promise(r => tx.oncomplete = r);
+        },
+        async get(key) {
+          const db = await this.getDB();
+          const tx = db.transaction('files', 'readonly');
+          const req = tx.objectStore('files').get(key);
+          return new Promise(r => req.onsuccess = () => r(req.result));
+        }
+      };
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function tickClock() {
+        const d = new Date();
+        els.clock.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+      }
+      setInterval(tickClock, 1000); tickClock();
+
+      function parseStateFromJsonText(text) {
+        const obj = JSON.parse(text);
+        if (!obj.status || !obj.logs || !obj.segments) throw new Error('JSON missing status/logs/segments');
+        return obj;
+      }
+      function stringifyState() { return JSON.stringify(state.json, null, 2); }
+
+      function syncComputedFromJson() {
+        state.logs = Array.isArray(state.json.logs) ? state.json.logs.slice() : [];
+        state.segments = Array.isArray(state.json.segments) ? state.json.segments.slice() : [];
+        state.theme = state.json.theme || 'light';
+        document.body.dataset.theme = state.theme;
+        els.themeBtn.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+        renderStatus();
+        renderAll();
+        updateCounters();
+        refreshJsonEditor();
+      }
+
+      function renderStatus() {
+        const s = state.json.status || defaultState.status;
+        els.prodVal.textContent = s.production || '';
+        els.laborVal.textContent = s.labor || '';
+        els.entropyVal.textContent = s.entropy || '';
+        els.riskVal.textContent = s.risk || '';
+        els.prodInput.value = s.production || '';
+        els.laborInput.value = s.labor || '';
+        els.entropyInput.value = s.entropy || '';
+        els.riskInput.value = s.risk || '';
+      }
+
+      function refreshJsonEditor() { els.jsonEditor.value = stringifyState(); }
+
+      function updateCounters() {
+        els.logCounter.textContent = `${Math.max(0, state.logIndex + 1)} / ${state.logs.length}`;
+        els.segmentCounter.textContent = `${Math.max(0, state.segmentIndex + 1)} / ${state.segments.length}`;
+      }
+
+      function escapeHtml(str) { return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s])); }
+
+      function renderLogAt(index) {
+        els.logBox.innerHTML = '';
+        if (!state.logs.length) { updateCounters(); return; }
+        const max = Math.min(index, state.logs.length - 1);
+        for (let i = 0; i <= max; i++) {
+          const div = document.createElement('div');
+          div.className = 'logEntry' + (i === max ? ' current' : ' past');
+          div.innerHTML = `<span class="idx">[${pad(i + 1)}]</span><span class="txt"></span>`;
+          div.querySelector('.txt').textContent = state.logs[i];
+          els.logBox.appendChild(div);
+        }
+        updateCounters();
+
+        if (els.autoScroll.checked && els.logBox.lastElementChild) {
+          els.logBox.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      }
+
+      function renderSegmentAt(index, allowVoice = false) {
+        els.dialogue.innerHTML = '';
+        if (!state.segments.length) { updateCounters(); return; }
+        const max = Math.min(index, state.segments.length - 1);
+        for (let i = 0; i <= max; i++) {
+          const seg = state.segments[i];
+          const bubble = document.createElement('div');
+          bubble.className = `bubble ${seg.type === 'ai' ? 'ai' : 'self'}${i === max ? ' highlight' : ''}`;
+          bubble.innerHTML = `<div class="speaker">${escapeHtml(seg.speaker || 'SPEAKER')}</div><div class="body"></div>`;
+          bubble.querySelector('.body').textContent = seg.text || '';
+
+          if (i === max && state.voiceEnabled && seg.voice !== 'no' && allowVoice) {
+            speak(seg.text || '', state.voiceRate);
+          }
+          els.dialogue.appendChild(bubble);
+        }
+        updateCounters();
+
+        if (els.autoScroll.checked && els.dialogue.lastElementChild) {
+          els.dialogue.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      }
+
+      function renderAll() {
+        renderLogAt(state.logIndex);
+        renderSegmentAt(state.segmentIndex, false);
+      }
+
+      function speak(text, rate) {
+        if (!state.voiceEnabled || !('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(String(text).replace(/\n+/g, ' '));
+        u.rate = rate; u.pitch = 0.95; u.volume = 1;
+        const voices = speechSynthesis.getVoices();
+        const preferred = voices.find(v => /en/i.test(v.lang)) || voices[0];
+        if (preferred) u.voice = preferred;
+        window.speechSynthesis.speak(u);
+      }
+      function stopSpeaking() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
+
+      function stopLog() {
+        state.logPlaying = false;
+        if (state.logTimer) clearInterval(state.logTimer);
+        state.logTimer = null;
+        els.toggleLogBtn.textContent = 'Log ⏯️';
+        els.toggleLogBtn.classList.remove('on');
+      }
+      function playLog() {
+        if (!state.logs.length) return;
+        state.logPlaying = true;
+        els.toggleLogBtn.textContent = 'Log ⏸️';
+        els.toggleLogBtn.classList.add('on');
+        if (state.logTimer) clearInterval(state.logTimer);
+        if (state.logIndex < 0) logNext();
+        state.logTimer = setInterval(() => {
+          if (!state.logPlaying) return;
+          if (state.logIndex >= state.logs.length - 1) { stopLog(); return; }
+          logNext();
+        }, 3571);
+      }
+      function toggleLog() { state.logPlaying ? stopLog() : playLog(); }
+      function logNext() {
+        if (state.logIndex >= state.logs.length - 1) { stopLog(); return; }
+        state.logIndex += 1; renderLogAt(state.logIndex);
+      }
+      function logPrev() {
+        state.logIndex = Math.max(-1, state.logIndex - 1); renderLogAt(state.logIndex);
+      }
+
+      function stopSegment() {
+        state.segmentPlaying = false;
+        if (state.autoAdvanceTimer) clearTimeout(state.autoAdvanceTimer);
+        state.autoAdvanceTimer = null;
+        els.scriptState.textContent = 'paused';
+        els.toggleScriptBtn.textContent = 'Recording ⏯️';
+        els.toggleScriptBtn.classList.remove('on');
+        stopSpeaking();
+      }
+      function playSegment() {
+        if (!state.segments.length) return;
+        state.segmentPlaying = true;
+        els.scriptState.textContent = 'playing';
+        els.toggleScriptBtn.textContent = 'Recording ⏸️';
+        els.toggleScriptBtn.classList.add('on');
+
+        if (state.autoAdvanceTimer) clearTimeout(state.autoAdvanceTimer);
+        if (state.segmentIndex < 0) segmentNext();
+        else {
+          const seg = state.segments[state.segmentIndex];
+          state.autoAdvanceTimer = setTimeout(() => {
+            if (state.segmentPlaying) segmentNext();
+          }, seg.pause || 3000);
+        }
+      }
+      function toggleSegment() { state.segmentPlaying ? stopSegment() : playSegment(); }
+
+      function segmentNext() {
+        if (state.segmentIndex >= state.segments.length - 1) { stopSegment(); els.scriptState.textContent = 'ended'; return; }
+        state.segmentIndex += 1;
+        renderSegmentAt(state.segmentIndex, true);
+        if (state.segmentPlaying) {
+          const seg = state.segments[state.segmentIndex];
+          if (state.autoAdvanceTimer) clearTimeout(state.autoAdvanceTimer);
+          state.autoAdvanceTimer = setTimeout(() => {
+            if (state.segmentPlaying) segmentNext();
+          }, seg.pause || 3000);
+        }
+      }
+      function segmentPrev() {
+        state.segmentIndex = Math.max(-1, state.segmentIndex - 1);
+        renderSegmentAt(state.segmentIndex, true);
+      }
+
+      function resetAll() {
+        stopLog(); stopSegment();
+        state.logIndex = -1; state.segmentIndex = -1;
+        els.logBox.innerHTML = ''; els.dialogue.innerHTML = '';
+        els.scriptState.textContent = 'ready';
+        renderAll();
+      }
+
+      function applyJsonFromEditor() {
+        try {
+          state.json = parseStateFromJsonText(els.jsonEditor.value);
+          syncComputedFromJson(); resetAll();
+        } catch (err) { alert('JSON parse error: ' + err.message); }
+      }
+
+      function updateJsonAndRefreshFromInputs() {
+        state.json.status = {
+          production: els.prodInput.value.trim(), labor: els.laborInput.value.trim(),
+          entropy: els.entropyInput.value.trim(), risk: els.riskInput.value.trim()
+        };
+        refreshJsonEditor(); renderStatus();
+        if (state.boundHandle) saveToBoundFile(false);
+      }
+
+      function makeJsonText() { return JSON.stringify(state.json, null, 2); }
+
+      async function loadDataFromHandle(handle) {
+        const file = await handle.getFile();
+        const text = await file.text();
+        state.json = parseStateFromJsonText(text);
+        state.boundHandle = handle;
+        els.saveBtn.classList.add('primary');
+        els.bindStatusText.textContent = `status: bound to ${file.name}`;
+        els.bindStatusText.style.color = 'var(--ok)';
+        syncComputedFromJson(); resetAll();
+      }
+
+      async function bindJsonFile() {
+        if (state.savedHandle) {
+          try {
+            if ((await state.savedHandle.requestPermission({ mode: 'readwrite' })) === 'granted') {
+              await loadDataFromHandle(state.savedHandle);
+              state.savedHandle = null;
+              els.bindBtn.textContent = 'Bind JSON';
+              els.bindBtn.classList.remove('warning');
+              return;
+            }
+          } catch (err) {
+            state.savedHandle = null;
+            await idb.set('boundFileHandle', null);
+          }
+        }
+
+        if (!window.showOpenFilePicker) { alert('Browser unsupported. Please use Chrome/Edge.'); return; }
+        try {
+          const [handle] = await window.showOpenFilePicker({
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }], multiple: false
+          });
+          await loadDataFromHandle(handle);
+          await idb.set('boundFileHandle', handle);
+
+          els.bindBtn.textContent = 'Bind JSON';
+          els.bindBtn.classList.remove('warning');
+        } catch (err) { }
+      }
+
+      async function saveToBoundFile(alertOnDone = true) {
+        if (!state.boundHandle) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(new Blob([makeJsonText()], { type: 'application/json' }));
+          a.download = 'uec-performance-console.json'; a.click(); return;
+        }
+        try {
+          const writable = await state.boundHandle.createWritable();
+          await writable.write(makeJsonText());
+          await writable.close();
+          if (alertOnDone) alert('Saved to bound JSON file.');
+        } catch (err) {
+          alert('Save failed: ' + err.message);
+        }
+      }
+
+      async function initAndCheckSavedBind() {
+        try {
+          const handle = await idb.get('boundFileHandle');
+          if (handle) {
+            state.savedHandle = handle;
+            els.bindBtn.textContent = '🔄 Restore Bind';
+            els.bindBtn.classList.add('warning');
+            els.bindStatusText.textContent = `status: saved binding detected, click [Restore Bind]`;
+            els.bindStatusText.style.color = 'var(--accent2)';
+            return;
+          }
+        } catch (err) {}
+
+        try {
+          const res = await fetch('uec-performance-console.json');
+          if (res.ok) {
+            const text = await res.text();
+            state.json = parseStateFromJsonText(text);
+            syncComputedFromJson(); resetAll();
+            els.bindStatusText.textContent = `status: auto-fetched local json (read-only until bound)`;
+            els.bindStatusText.style.color = 'var(--accent)';
+          }
+        } catch (err) { }
+      }
+
+      function toggleTheme() {
+        state.theme = state.theme === 'light' ? 'dark' : 'light';
+        state.json.theme = state.theme;
+        document.body.dataset.theme = state.theme;
+        els.themeBtn.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+        if (state.boundHandle) saveToBoundFile(false);
+      }
+
+      function toggleTTS() {
+        state.voiceEnabled = !state.voiceEnabled;
+        els.ttsBtn.textContent = state.voiceEnabled ? '🔊 TTS' : '🔇 TTS';
+        els.ttsBtn.classList.toggle('on', state.voiceEnabled);
+        if (!state.voiceEnabled) stopSpeaking();
+      }
+
+      function updateVoiceRate() {
+        state.voiceRate = parseFloat(els.voiceSpeed.value);
+        els.voiceSpeedVal.textContent = `${state.voiceRate.toFixed(2)}×`;
+      }
+
+      function closeMediaWindow() {
+        if (state.cameraStream) state.cameraStream.getTracks().forEach(t => t.stop());
+        state.cameraStream = null;
+        els.cameraVideo.srcObject = null;
+        els.cameraVideo.innerHTML = '';
+        els.cameraVideo.load();
+        els.cameraWindowPlaceholder.style.display = 'grid';
+        els.cameraWindowPlaceholder.textContent = 'MEDIA OFF';
+        els.cameraVideo.style.display = 'none';
+        state.cameraOn = false;
+        state.mediaType = 'none';
+        els.cameraBtn.classList.remove('on');
+        els.videoBtn.classList.remove('on');
+        els.cameraWindow.classList.remove('open');
+        els.cameraWindowState.textContent = 'OFF';
+        els.mediaTitle.textContent = 'MEDIA FEED';
+      }
+
+      async function toggleCameraWindow() {
+        if (!state.cameraOn || state.mediaType === 'video') {
+          els.cameraWindow.classList.add('open');
+          els.cameraWindowState.textContent = 'ON';
+          els.mediaTitle.textContent = 'LIVE CAMERA FEED';
+          els.cameraBtn.classList.add('on');
+          els.videoBtn.classList.remove('on');
+
+          els.cameraVideo.innerHTML = '';
+          els.cameraVideo.load();
+
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            state.cameraStream = stream;
+            els.cameraVideo.srcObject = stream;
+            els.cameraVideo.muted = true;
+            els.cameraVideo.style.display = 'block';
+            els.cameraWindowPlaceholder.style.display = 'none';
+            state.cameraOn = true;
+            state.mediaType = 'camera';
+          } catch (err) {
+            els.cameraWindowPlaceholder.textContent = 'Camera Err: ' + err.message;
+          }
+        } else {
+          closeMediaWindow();
+        }
+      }
+
+      async function toggleVideoWindow() {
+        if (!state.cameraOn || state.mediaType === 'camera') {
+          els.cameraWindow.classList.add('open');
+          els.cameraWindowState.textContent = 'ON';
+          els.mediaTitle.textContent = 'LOCAL VIDEO FEED';
+          els.videoBtn.classList.add('on');
+          els.cameraBtn.classList.remove('on');
+
+          if (state.cameraStream) {
+            state.cameraStream.getTracks().forEach(t => t.stop());
+            state.cameraStream = null;
+            els.cameraVideo.srcObject = null;
+          }
+
+          els.cameraVideo.innerHTML = `
+            <source src="video_log_040646.mp4" type="video/mp4">
+            <source src="video_log_040646.webm" type="video/webm">
+            <source src="video_log_040646.ogg" type="video/ogg">
+            <source src="video_log_040646.mov" type="video/quicktime">
+          `;
+          els.cameraVideo.muted = false;
+          els.cameraVideo.loop = true;
+          els.cameraVideo.style.display = 'block';
+          els.cameraWindowPlaceholder.style.display = 'none';
+          
+          els.cameraVideo.load();
+          els.cameraVideo.play().catch(e => {
+            els.cameraWindowPlaceholder.textContent = 'Video Play Err (File missing?)';
+            els.cameraWindowPlaceholder.style.display = 'grid';
+            els.cameraVideo.style.display = 'none';
+          });
+
+          state.cameraOn = true;
+          state.mediaType = 'video';
+        } else {
+          closeMediaWindow();
+        }
+      }
+
+      let drag = null;
+      els.cameraDrag.addEventListener('pointerdown', (e) => {
+        if (!state.cameraOn) return;
+        const rect = els.cameraWindow.getBoundingClientRect();
+        drag = { x: e.clientX, y: e.clientY, left: rect.left, top: rect.top };
+        els.cameraWindow.setPointerCapture?.(e.pointerId);
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!drag || !state.cameraOn) return;
+        els.cameraWindow.style.left = Math.max(8, drag.left + (e.clientX - drag.x)) + 'px';
+        els.cameraWindow.style.top = Math.max(8, drag.top + (e.clientY - drag.y)) + 'px';
+        els.cameraWindow.style.right = 'auto';
+      });
+      window.addEventListener('pointerup', () => { drag = null; });
+
+      let resize = null;
+      els.resizeHandle.addEventListener('pointerdown', (e) => {
+        if (!state.cameraOn) return;
+        const rect = els.cameraWindow.getBoundingClientRect();
+        resize = { x: e.clientX, y: e.clientY, width: rect.width, height: rect.height };
+        e.preventDefault();
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!resize || !state.cameraOn) return;
+        els.cameraWindow.style.width = Math.max(220, resize.width + (e.clientX - resize.x)) + 'px';
+        els.cameraWindow.style.height = Math.max(180, resize.height + (e.clientY - resize.y)) + 'px';
+      });
+      window.addEventListener('pointerup', () => { resize = null; });
+
+      syncComputedFromJson();
+      updateVoiceRate(); stopLog(); stopSegment();
+      initAndCheckSavedBind();
+
+      els.toggleScriptBtn.onclick = toggleSegment;
+      els.prevScriptBtn.onclick = segmentPrev;
+      els.nextScriptBtn.onclick = segmentNext;
+      els.toggleLogBtn.onclick = toggleLog;
+      els.prevLogBtn.onclick = logPrev;
+      els.nextLogBtn.onclick = logNext;
+
+      els.editBtn.onclick = () => els.editorPanel.classList.toggle('open');
+      els.bindBtn.onclick = bindJsonFile;
+      els.saveBtn.onclick = () => saveToBoundFile();
+      els.ttsBtn.onclick = toggleTTS;
+      els.cameraBtn.onclick = toggleCameraWindow;
+      els.videoBtn.onclick = toggleVideoWindow;
+      els.cameraCloseBtn.onclick = closeMediaWindow;
+      els.themeBtn.onclick = toggleTheme;
+      els.applyBtn.onclick = applyJsonFromEditor;
+      els.closeEditorBtn.onclick = () => els.editorPanel.classList.toggle('open');
+      els.voiceSpeed.oninput = updateVoiceRate;
+
+      [els.prodInput, els.laborInput, els.entropyInput, els.riskInput].forEach(el => el.addEventListener('input', updateJsonAndRefreshFromInputs));
+      els.jsonEditor.addEventListener('input', () => {
+        try { state.json = JSON.parse(els.jsonEditor.value); } catch { return; }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.target && (e.target.tagName === 'TEXTAREA' || (e.target.tagName === 'INPUT' && e.target.type === 'text'))) return;
+        if (e.target && e.target.tagName === 'BUTTON' && e.code === 'Space') return;
+
+        const isLog = e.target.closest('.screen');
+        const isScript = e.target.closest('.script');
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (isLog) toggleLog();
+          else toggleSegment();
+        } else if (e.code === 'ArrowRight') {
+          e.preventDefault();
+          if (isLog) logNext();
+          else segmentNext();
+        } else if (e.code === 'ArrowLeft') {
+          e.preventDefault();
+          if (isLog) logPrev();
+          else segmentPrev();
+        } else if (e.key.toLowerCase() === 'r') {
+          resetAll();
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>

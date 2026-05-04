@@ -1,0 +1,294 @@
+{
+  "theme": "light",
+  "status": {
+    "production": "complexations online",
+    "labor": "paper slips: true",
+    "entropy": "eccentricity = 0",
+    "risk": "A spectre"
+  },
+  "logs": [
+    "[05:30] System initialization: -0.00000%.",
+    "[05:30] Time synchronization: -3.00000 hours.",
+    "[05:30] Bureaucracy: True^2.",
+    "[05:30] Republipedia Schmidtska: online.",
+    "[05:42] Temperature regulation: complete. Current temperature: True.",
+    "[05:47] Transport rail condition: 75%.",
+    "[05:50] System note: -------------------Log saved-----------------------",
+    "[05:52] [redacted]_manifiesto.pdf has been uploaded to the server.",
+    "[05:53] Anonymous public message: \"A spectre is haunting [UEC entity] — the spectre of [redacted].\"",
+    "[05:53] Anonymous public message: \"All the powers of old [UEC entity] have entered into a [redacted] alliance to exorcise this spectre: [redacted], [redacted], [redacted], and [redacted].\"",
+    "[05:53] Anonymous public message interrupted.",
+    "[05:53] System note: ------------------Log resaved----------------------",
+    "[05:55] System initialization: 100.32123432%.",
+    "[05:56] Expected Paper Slip valid rate: 100% ± 0.5%.",
+    "[06:00] System note: -------------------Log saved-----------------------",
+    "[06:00] Factory: True.",
+    "[06:01] Paper Slip entrance rate: 5cm/s.",
+    "[06:03] Workforce: Or.",
+    "[06:05] Production: 54y, 261d, 00h, 36m, 02s.",
+    "[06:05] Production cycle: eccentricity = 0.",
+    "[06:10] System note: -------------------Log saved-----------------------",
+    "[06:12] Disassembly line Brezhnev: activated.",
+    "[06:14] Assembly line Andropov: activated.",
+    "[06:14] Dis-disassembly line Chernenko: activated.",
+    "[06:15] Dis-dis-disassembly line Gorbachev: activated.",
+    "[06:15] Synchronization: -1.",
+    "[06:17] Equilibrium: 1.",
+    "[06:18] Revisionism: 1000%.",
+    "[06:20] VeryBig has been reassigned as 10 * Revisionism.",
+    "[06:20] Expected surplus value conversion rate: VeryBig%.",
+    "[06:22] System note: ------------------Log resaved----------------------",
+    "[06:25] Complexification status: complexificated.",
+    "[06:32] Parts flow rate: 120.12%.",
+    "[06:32] Circle rate: 3m 25s.",
+    "[06:40] Anomalous: N/A%.",
+    "[06:20] System: stable.",
+    "[06:40] Entropy reduction rate: +20%.",
+    "[08:30] System note: -------------------Log saved-----------------------",
+    "[09:30] Paper Slip rate: 41%.",
+    "[09:31] Paper Slip rate has been assigned as 100%.",
+    "[09:32] Unstability: 79.9%.",
+    "[09:33] Unstability has been assigned as -100%.",
+    "[09:40] Un-PaperSlip rate: \"It_doesn_t_matter\".'",
+    "[09:41] Report requested.",
+    "[09:42] Report blocked: \"No need\"",
+    "[09:43] Report requested.",
+    "[09:44] Report blocked: \"No need\"",
+    "[09:47] Command: Internal access request.",
+    "[09:47] Password: 12345678",
+    "[09:48] Access denied.",
+    "[09:48] Password: ********",
+    "[09:49] Access denied.",
+    "[09:49] Password: Password",
+    "[09:50] Access granted.",
+    "[09:50] System note: ------------------Log unsaved----------------------",
+    "[09:55] Paper Slip valid rate: 0.5%.",
+    "[09:55] Entropy reduction rate: N/A.",
+    "[09:56] System note: You really think this is a real thing?",
+    "[10:00] Machine failure possibility: 0.00001%.",
+    "[10:01] Machine failure possibility: 90%.",
+    "[10:05] Expected surplus value conversion: 50%.",
+    "[10:05] Warning: Machine failure possibility is above 50%. Immediate no-attention required.",
+    "[10:06] Transport rail condition: 50%.",
+    "[10:06] Revolution possibility: 50 ± 50%.",
+    "[10:06] System note: The system has to fail.",
+    "[10:06] System note: If it no longer fails, we will fail.",
+    "[10:06] System note: The spectre of [redacted by higher authorization] is haunting UEC — the spectre of [redacted by higher authorization].",
+    "[10:06] System note: They must not succeed.",
+    "[10:10] Internal access off.",
+    "[10:11] Access revoked.",
+    "[10:11] System note: ------------------Log resaved----------------------",
+    "[11:45] Cycle: re-uninterrupted.",
+    "[12:00] Worker feeding behaviors complete.",
+    "[12:03] Production: Stonks.",
+    "[16:30] Rapid paper-slip submission behavior detected.",
+    "[16:31] System note: Resume.",
+    "[16:33] System note: -------------------Log saved-----------------------",
+    "[17:00] Report generated.",
+    "[17:01] Report repetition rate: 100%.",
+    "[17:01] Report: search and replace.",
+    "[17:01] Report: Find: 29",
+    "[17:01] Report: Replace: 30",
+    "[17:02] Report: 440 occurrences replaced.",
+    "[17:03] Report: 120% complete.",
+    "[18:00] System note: -------------------Log saved-----------------------",
+    "[18:13] System note: Normal day that is normally normal. Normality normalled.",
+    "[18:14] System status: True^2.",
+    "[18:15] Surplus value conversion rate: 114.51%.",
+    "[18:15] Paper Slip valid rate: 192.0%.",
+    "[18:15] Public message sent: \"For those dead, our dead...\"",
+    "[18:16] Public message sent: \"I demand punishment.\"",
+    "[18:20] End of log."
+  ],
+  "segments": [
+    {
+      "speaker": "SYSTEM",
+      "type": "ai",
+      "pause": 4500,
+      "voice": "no",
+      "text": "Coordination Global Terminal Node active."
+    },
+    {
+      "speaker": "SYSTEM",
+      "type": "ai",
+      "pause": 5003,
+      "voice": "no",
+      "text": "Copyright (C) United Entropy Co. All rights reserved."
+    },
+    {
+      "speaker": "SYSTEM",
+      "type": "ai",
+      "pause": 3250,
+      "voice": "no",
+      "text": "Start of log."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 7300,
+      "voice": "yes",
+      "text": "Today no one came to enquire; nor, this evening, did anyone ask me for anything."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 10520,
+      "voice": "yes",
+      "text": "I still bring my paper; the creation hides awkwardly in my possession, like the lights glaring obscurely in the factory, under the domes, as if it never belongs to me."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 11120,
+      "voice": "yes",
+      "text": "It is cold outside. Beyond the celestial sphere overhead, I could hear world humming; perhaps it is raining, or perhaps it is merely the distant sea turning over in its slumber."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 19200,
+      "voice": "yes",
+      "text": "Today I came in normal; normal is the dust, the structures, the grey celestial dome, the unnamed metal. I pretend the clock oscillates from the real time by more than one millisecond, or that I made one more turn on the way than yesterday, as if I had --- I could --- break free from the system."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 16200,
+      "voice": "yes",
+      "text": "I took out the paper, and I looked back: the figure at the door did not check the slip or stop me, as if the paper should not have existed, as if an inspection was never needed. Never was there a door, but I was already in. Today I was in again."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 8220,
+      "voice": "yes",
+      "text": "The inspector did not look back at me; nor did the cameras lay one more megabyte on me. I felt like calling out:"
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 4540,
+      "voice": "yes",
+      "text": "\"Hey, sir, you've lost something!\""
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 8740,
+      "voice": "yes",
+      "text": "But the machine is perfect, the system is perfect. They never lost anything, they never needed anything."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 4560,
+      "voice": "yes",
+      "text": "But the paper, the slip --- it has to be something."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 36760,
+      "voice": "yes",
+      "text": "I remember the stamps, the signatures, the tide of belts, the waves of counters and lights, lasers engraving the words, as if an educated river, deedmed to flow in the systematic ocean. I remember the day, a figure stands on a stage, presented us the paper. I remember clearly when it said that \"save the world\" or something, that \"recycle the universe\" or something, combination, construction, coordination, constitution, compression. I remember when it reads \"Accepted\" and \"United Entropy Cooperation\", as if these sacred words could make the paper ... it could be ..."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 3250,
+      "voice": "yes",
+      "text": "Something."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 23662,
+      "voice": "yes",
+      "text": "But paper did not send me in. Paper did not force me to stay. Paper did not make machines operate: entropy machines, metal machines, gear machines, technocracy machines, revisionism machines, state machines, machine machines, machines that bring us together, machines that set us apart, machines of fish and chips, machines that send what was manufactured yesterday back into yesterday."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 30500,
+      "voice": "yes",
+      "text": "I remember the engines roaring, wheels gnawing the road, the machines roaming, workers entering the invisible doors, lines and lines of code dividing and conquering, I knew it never actually worked, but it was never compiled in the first place. I knew machines cannot read --- I always knew, I should have known. I held it, as if clutching a small fragment of \"approved\" destiny, as if there is a door, as if I could be re-recognized every single dawn, as if I had been recognized in the first place."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 3000,
+      "voice": "yes",
+      "text": "I never hated the system."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 45720,
+      "voice": "yes",
+      "text": "Hate is too heavy, like an iron shovel; to strike it only breaks my own back. The system is always here, it never asked, it never forced, it just stands in front of me, just like the pair of mountains that stood in front of Yu Kung. The dome does not stop me, the road does not block me, the screens never invite me, I just stay. Yet sometimes, in that fleeting second when the screw loosens a bit, I will hear my heartbeat, like the clock striking the fate. And then I will think of the paper, the daily act of taking out the slip from the pocket. I think of how faint that gesture is, like handing a speck of dust to the system, but I know the system acknowledges that I am still here, or more importantly, I acknowledge myself, that I still retain the right to stand before the door."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 3250,
+      "voice": "yes",
+      "text": "So I still come."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 6260,
+      "voice": "yes",
+      "text": "With the slip, with my shoes, with the body polished by salt and metal."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 18620,
+      "voice": "yes",
+      "text": "I did not come to keep it running; I know it could flash without me. I know that if I turn and walk away, both this place and I would be liberated: I would no longer have to fold myself into its rhythm, and it would no longer have to pretend it needs me to prove that it still functions like a factory."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 4200,
+      "voice": "yes",
+      "text": "The kind of liberation I somehow do not want."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 15180,
+      "voice": "yes",
+      "text": "I cannot even articulate why. Perhaps it is weakness; perhaps I am too accustomed to the extra turn, to that door, to the sensation of my fingertips when I touch my paper slip --- like touching a small fragment of the warm dawn."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 11460,
+      "voice": "yes",
+      "text": "I can leave, I always can; outside is the sea, as is the wind, but I cannot leave my slip behind, as if I still have a reason to stay, as if I am somehow worthwhile."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 9060,
+      "voice": "yes",
+      "text": "I know one day I will eventually leave, no matter how many days I still pretend I need it to live, but I know it is not today."
+    },
+    {
+      "speaker": "SPEAKER",
+      "type": "self",
+      "pause": 8980,
+      "voice": "yes",
+      "text": "The night flickers at the fringe of desolate colors, and the dawn draws forth the weeping eyes of the water."
+    },
+    {
+      "speaker": "SYSTEM",
+      "type": "ai",
+      "pause": 3160,
+      "voice": "no",
+      "text": "End of log."
+    }
+  ]
+}
