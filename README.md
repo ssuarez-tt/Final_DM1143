@@ -3,7 +3,7 @@ Final for DM-UY 1143
 
 ## Controls:
 
-Click "Bind JSON" or "Restore Bind" to load logs, script and monologue.
+Click "Bind JSON" or "Restore Bind" to load alternative logs, script and monologue. By default it will automatically bind to uec-performance-console.json upon loading.
 
 Click "Log" to play/pause system log and "Recording" to play/pause voice log.
 
