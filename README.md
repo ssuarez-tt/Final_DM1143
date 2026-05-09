@@ -1,6 +1,14 @@
 # Final_DM1143
 Final for DM-UY 1143
 
+## Controls:
+Click "Bind JSON" or "Restore Bind" to load logs, script and monologue.
+Click "Log" to play/pause system log and "Recording" to play/pause voice log.
+Click "TTS" to enable enable/disable text-to-speech.
+Click the camera emoji to open a camera window and the video emoji to open a video window of video_log_040646.
+Click the moon/sun emoji to toggle night/day mode.
+
+
 ## License & Copyright
 
 This project operates under a **dual copyright declaration**, applying separate terms to the "Software Code" and the "Artistic Content":
