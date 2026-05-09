@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UEC Performance Console v5.6</title>
+  <title>UEC Performance Console v5.7</title>
   <style>
     :root {
       --bg: #f5f7fb;
@@ -38,8 +38,7 @@
     * {
       box-sizing: border-box
     }
-    html,
-    body {
+    html, body {
       margin: 0;
       height: 100%;
       background: radial-gradient(circle at top, var(--panel3) 0%, var(--bg) 60%);
@@ -47,9 +46,7 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       overflow: hidden
     }
-    button,
-    input,
-    textarea {
+    button, input, textarea {
       font: inherit
     }
     .app {
@@ -59,8 +56,7 @@
       height: 100%;
       padding: 10px
     }
-    .toolbar,
-    .editorPanel {
+    .toolbar, .editorPanel {
       background: linear-gradient(180deg, var(--panel), var(--panel2));
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -150,12 +146,17 @@
     }
     .stage {
       display: grid;
+      grid-template-rows: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 10px;
+      min-height: 0
+    }
+    .stage-top {
+      display: grid;
       grid-template-columns: 1.05fr .95fr;
       gap: 10px;
       min-height: 0
     }
-    .screen,
-    .script {
+    .screen, .script, .gallery {
       background: linear-gradient(180deg, var(--panel), var(--panel2));
       border: 1px solid var(--border);
       border-radius: 18px;
@@ -165,8 +166,7 @@
       position: relative;
       outline: none;
     }
-    .screen:focus,
-    .script:focus {
+    .screen:focus, .script:focus, .gallery:focus {
       outline: 2px solid var(--accent);
       box-shadow: 0 0 0 4px var(--focus);
     }
@@ -193,12 +193,61 @@
       border-radius: 50%;
       background: rgba(127, 146, 168, .28)
     }
-    .screen-body,
-    .script-body {
+    .screen-body, .script-body, .gallery-body {
       display: flex;
       flex-direction: column;
       min-height: 0;
       height: calc(100% - 49px)
+    }
+    .gallery-body {
+      background: #000;
+    }
+    .visual-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .carousel-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+    .carousel-img.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    .carousel-nav {
+      position: absolute;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      pointer-events: none;
+    }
+    .nav-btn {
+      pointer-events: auto;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .nav-btn:hover {
+      background: rgba(0,0,0,0.8);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .boot {
       padding: 13px 16px 4px;
@@ -206,8 +255,7 @@
       font-size: 13px;
       line-height: 1.5
     }
-    .logControls,
-    .scriptControls {
+    .logControls, .scriptControls {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -465,8 +513,7 @@
       border-bottom: 2px solid rgba(127, 146, 168, .55)
     }
     @media (max-width: 1100px) {
-      html,
-      body {
+      html, body {
         overflow: auto
       }
       .app {
@@ -475,8 +522,13 @@
         overflow: visible
       }
       .stage {
-        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        height: auto;
         min-height: 700px
+      }
+      .stage-top {
+        grid-template-columns: 1fr;
+        height: auto;
       }
       .statusbar {
         grid-template-columns: repeat(2, 1fr)
@@ -488,6 +540,9 @@
         position: sticky;
         top: 0;
         z-index: 4
+      }
+      .gallery, .script, .screen {
+        min-height: 400px;
       }
     }
   </style>
@@ -517,6 +572,51 @@
     </div>
 
     <div class="stage">
+      <div class="stage-top">
+        <section class="gallery" tabindex="0">
+          <div class="topbar">
+            <div class="dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <div>VISUAL EVIDENCE FEED</div>
+            <div id="imgCounter">0 / 0</div>
+          </div>
+          <div class="gallery-body">
+            <div class="visual-content" id="carouselContainer">
+              <div class="carousel-nav">
+                <button class="nav-btn" id="prevImgBtn">❮</button>
+                <button class="nav-btn" id="nextImgBtn">❯</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="script" tabindex="0">
+          <div class="topbar">
+            <div class="dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <div>MONOLOGUE</div>
+            <div id="segmentCounter">0 / 0</div>
+          </div>
+          <div class="script-body">
+            <div class="scriptControls">
+              <span class="label">voice log</span>
+              <span class="small" id="scriptState">ready</span>
+            </div>
+            <div class="dialogue" id="dialogue"></div>
+            <div class="footer">
+              <div></div>
+              <div>keys: select window + <span class="kbd">Space</span> play/pause <span class="kbd">→</span> next <span class="kbd">←</span> prev <span class="kbd">R</span> reset</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
       <section class="screen" tabindex="0">
         <div class="topbar">
           <div class="dots">
@@ -530,8 +630,6 @@
         <div class="screen-body">
           <div class="boot" id="bootText">
             booting archive interface...<br>
-            loading Republipedia node...<br>
-            establishing paper-slip authentication...<br>
             <span class="small" id="bindStatusText">status: nominal / absurd / stable</span>
           </div>
           <div class="logControls">
@@ -561,30 +659,6 @@
           </div>
         </div>
       </section>
-
-      <section class="script" tabindex="0">
-        <div class="topbar">
-          <div class="dots">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-          </div>
-          <div>MONOLOGUE</div>
-          <div id="segmentCounter">0 / 0</div>
-        </div>
-        <div class="script-body">
-          <div class="scriptControls">
-            <span class="label">voice log</span>
-            <span class="small" id="scriptState">ready</span>
-          </div>
-          <div class="dialogue" id="dialogue"></div>
-          <div class="footer">
-            <div></div>
-            <div>keys: select window + <span class="kbd">Space</span> play/pause <span class="kbd">→</span> next <span
-                class="kbd">←</span> prev <span class="kbd">R</span> reset</div>
-          </div>
-        </div>
-      </section>
     </div>
 
     <div class="editorPanel" id="editorPanel">
@@ -599,20 +673,16 @@
         </div>
       </div>
       <div class="help">
-        Script line format in JSON: <span class="kbd">speaker</span>, <span class="kbd">type</span>, <span
-          class="kbd">pause</span>, <span class="kbd">voice</span>, <span class="kbd">text</span>.
-        Example: <span class="kbd">"pause": 3400</span> means milliseconds before auto-advance. <span
-          class="kbd">"voice": "yes"</span> allows TTS; <span class="kbd">"voice": "no"</span> blocks it.
+        Script line format in JSON: <span class="kbd">speaker</span>, <span class="kbd">type</span>, <span class="kbd">pause</span>, <span class="kbd">voice</span>, <span class="kbd">text</span>.
+        Example: <span class="kbd">"pause": 3400</span> means milliseconds before auto-advance. <span class="kbd">"voice": "yes"</span> allows TTS; <span class="kbd">"voice": "no"</span> blocks it.
       </div>
       <div class="editorGrid">
         <div class="editorBox">
-          <div class="small"><span>Full JSON document</span><span class="muted">status + logs + segments + theme</span>
-          </div>
+          <div class="small"><span>Full JSON document</span><span class="muted">status + logs + segments + theme</span></div>
           <textarea id="jsonEditor"></textarea>
         </div>
         <div class="editorBox">
-          <div class="small"><span>Quick status controls</span><span class="muted">these write into the JSON
-              document</span></div>
+          <div class="small"><span>Quick status controls</span><span class="muted">these write into the JSON document</span></div>
           <div style="display:grid;gap:10px;grid-template-rows:repeat(4,1fr);min-height:0;">
             <div class="field">
               <div class="label">production</div><input id="prodInput" type="text" />
@@ -667,6 +737,17 @@
         ]
       };
 
+      const imageList = [
+        'paper.jpg',
+        'manifiesto.jpg',
+        'dome.jpg',
+        "kotor.png",
+        'factory.jpg',
+        'factory1.jpg',
+        'skyline_(ai).jpg',
+        'ramona.jpg',
+      ];
+
       const els = {
         clock: document.getElementById('clock'),
         logBox: document.getElementById('logBox'),
@@ -710,7 +791,11 @@
         cameraVideo: document.getElementById('cameraVideo'),
         cameraWindowPlaceholder: document.getElementById('cameraWindowPlaceholder'),
         resizeHandle: document.getElementById('resizeHandle'),
-        bindStatusText: document.getElementById('bindStatusText')
+        bindStatusText: document.getElementById('bindStatusText'),
+        carouselContainer: document.getElementById('carouselContainer'),
+        prevImgBtn: document.getElementById('prevImgBtn'),
+        nextImgBtn: document.getElementById('nextImgBtn'),
+        imgCounter: document.getElementById('imgCounter')
       };
 
       const state = {
@@ -730,7 +815,8 @@
         cameraOn: false,
         mediaType: 'none',
         cameraStream: null,
-        theme: 'light'
+        theme: 'light',
+        currentImgIndex: 0
       };
 
       const idb = {
@@ -1175,6 +1261,45 @@
       });
       window.addEventListener('pointerup', () => { resize = null; });
 
+      function initGallery() {
+        imageList.forEach((name, i) => {
+          const img = document.createElement('img');
+          img.src = `./images/${name}`;
+          img.className = 'carousel-img' + (i === 0 ? ' active' : '');
+          img.alt = name;
+          els.carouselContainer.appendChild(img);
+        });
+        updateGalleryUI();
+      }
+
+      function updateGalleryUI() {
+        const imgs = els.carouselContainer.querySelectorAll('.carousel-img');
+        imgs.forEach((img, i) => {
+          img.classList.toggle('active', i === state.currentImgIndex);
+        });
+        if(imageList.length > 0) {
+          els.imgCounter.textContent = `${state.currentImgIndex + 1} / ${imageList.length}`;
+        } else {
+          els.imgCounter.textContent = `0 / 0`;
+        }
+      }
+
+      function nextImg() {
+        if (imageList.length === 0) return;
+        state.currentImgIndex = (state.currentImgIndex + 1) % imageList.length;
+        updateGalleryUI();
+      }
+
+      function prevImg() {
+        if (imageList.length === 0) return;
+        state.currentImgIndex = (state.currentImgIndex - 1 + imageList.length) % imageList.length;
+        updateGalleryUI();
+      }
+
+      els.nextImgBtn.onclick = (e) => { e.stopPropagation(); nextImg(); };
+      els.prevImgBtn.onclick = (e) => { e.stopPropagation(); prevImg(); };
+
+      initGallery();
       syncComputedFromJson();
       updateVoiceRate(); stopLog(); stopSegment();
       initAndCheckSavedBind();
@@ -1209,19 +1334,22 @@
 
         const isLog = e.target.closest('.screen');
         const isScript = e.target.closest('.script');
+        const isGallery = e.target.closest('.gallery');
 
         if (e.code === 'Space') {
           e.preventDefault();
           if (isLog) toggleLog();
-          else toggleSegment();
+          else if (isScript) toggleSegment();
         } else if (e.code === 'ArrowRight') {
           e.preventDefault();
           if (isLog) logNext();
-          else segmentNext();
+          else if (isScript) segmentNext();
+          else if (isGallery) nextImg();
         } else if (e.code === 'ArrowLeft') {
           e.preventDefault();
           if (isLog) logPrev();
-          else segmentPrev();
+          else if (isScript) segmentPrev();
+          else if (isGallery) prevImg();
         } else if (e.key.toLowerCase() === 'r') {
           resetAll();
         }
